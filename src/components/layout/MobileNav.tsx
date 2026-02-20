@@ -8,9 +8,16 @@ interface MobileNavProps {
   onClose: () => void;
   navItems: { label: string; href: string }[];
   user: { name: string; email: string } | null;
+  onSignOut?: () => void;
 }
 
-export default function MobileNav({ open, onClose, navItems, user }: MobileNavProps) {
+export default function MobileNav({
+  open,
+  onClose,
+  navItems,
+  user,
+  onSignOut,
+}: MobileNavProps) {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -83,7 +90,7 @@ export default function MobileNav({ open, onClose, navItems, user }: MobileNavPr
             <>
               <div className="mb-2 rounded-lg bg-primary-light px-4 py-3">
                 <p className="text-sm font-semibold text-primary">{user.name}</p>
-                <p className="text-xs text-muted">{user.email}</p>
+                <p className="truncate text-xs text-muted">{user.email}</p>
               </div>
               <Link
                 href="/mypage"
@@ -99,7 +106,13 @@ export default function MobileNav({ open, onClose, navItems, user }: MobileNavPr
               >
                 주문내역
               </Link>
-              <button className="mt-2 rounded-lg px-4 py-2.5 text-left text-sm text-muted transition-colors hover:bg-red-50 hover:text-red-600">
+              <button
+                onClick={() => {
+                  onClose();
+                  onSignOut?.();
+                }}
+                className="mt-2 rounded-lg px-4 py-2.5 text-left text-sm text-muted transition-colors hover:bg-red-50 hover:text-red-600"
+              >
                 로그아웃
               </button>
             </>

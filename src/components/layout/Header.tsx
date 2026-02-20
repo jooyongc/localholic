@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/supabase/auth-context";
 import MobileNav from "./MobileNav";
 
 const NAV_ITEMS = [
@@ -11,12 +13,11 @@ const NAV_ITEMS = [
 ];
 
 export default function Header() {
+  const router = useRouter();
+  const { profile, loading, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-
-  // TODO: Replace with real auth state from Supabase
-  const user = null as { name: string; email: string } | null;
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -27,6 +28,17 @@ export default function Header() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  async function handleSignOut() {
+    await signOut();
+    setProfileOpen(false);
+    router.push("/");
+    router.refresh();
+  }
+
+  const userForMobile = profile
+    ? { name: profile.name || "사용자", email: profile.email }
+    : null;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -56,33 +68,53 @@ export default function Header() {
 
         {/* Desktop Auth */}
         <div className="hidden items-center gap-2 md:flex">
-          {user ? (
+          {loading ? (
+            <div className="h-9 w-9 animate-pulse rounded-full bg-border" />
+          ) : profile ? (
             <div ref={profileRef} className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white transition-transform hover:scale-105"
               >
-                {user.name?.[0] || "U"}
+                {profile.name?.[0] || profile.email[0].toUpperCase()}
               </button>
               {profileOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-border bg-card p-1 shadow-lg">
                   <div className="border-b border-border px-3 py-2.5">
-                    <p className="text-sm font-semibold">{user.name}</p>
-                    <p className="text-xs text-muted">{user.email}</p>
+                    <p className="text-sm font-semibold">
+                      {profile.name || "사용자"}
+                    </p>
+                    <p className="truncate text-xs text-muted">
+                      {profile.email}
+                    </p>
                   </div>
                   <Link
                     href="/mypage"
+                    onClick={() => setProfileOpen(false)}
                     className="mt-1 block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary-light"
                   >
                     마이페이지
                   </Link>
                   <Link
                     href="/mypage/orders"
+                    onClick={() => setProfileOpen(false)}
                     className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-primary-light"
                   >
                     주문내역
                   </Link>
-                  <button className="mt-1 w-full rounded-lg border-t border-border px-3 py-2 text-left text-sm text-muted transition-colors hover:bg-red-50 hover:text-red-600">
+                  {profile.role === "admin" && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setProfileOpen(false)}
+                      className="block rounded-lg px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary-light"
+                    >
+                      관리자
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleSignOut}
+                    className="mt-1 w-full rounded-lg border-t border-border px-3 py-2 text-left text-sm text-muted transition-colors hover:bg-red-50 hover:text-red-600"
+                  >
                     로그아웃
                   </button>
                 </div>
@@ -132,7 +164,8 @@ export default function Header() {
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
         navItems={NAV_ITEMS}
-        user={user}
+        user={userForMobile}
+        onSignOut={handleSignOut}
       />
     </header>
   );

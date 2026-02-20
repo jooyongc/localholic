@@ -37,6 +37,35 @@ export interface Product {
   updated_at: string;
 }
 
+export interface Order {
+  id: string;
+  order_number: string;
+  user_id: string;
+  order_type: "product" | "travel";
+  total_amount: number;
+  payment_status: "pending" | "paid" | "cancelled" | "refunded";
+  payment_key: string | null;
+  shipping_address: Record<string, unknown> | null;
+  buyer_name: string;
+  buyer_phone: string;
+  buyer_email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  item_type: "product" | "travel";
+  item_id: string;
+  item_name: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  options: Record<string, unknown>;
+  created_at: string;
+}
+
 export interface TravelProgram {
   id: string;
   title: string;

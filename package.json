@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "pages:build": "opennextjs-cloudflare build && cp .open-next/worker.js .open-next/assets/_worker.js && echo '_worker.js' > .open-next/assets/.assetsignore",
+    "pages:build": "opennextjs-cloudflare build && cp .open-next/worker.js .open-next/assets/_worker.js && cp -r .open-next/cloudflare .open-next/assets/cloudflare && cp -r .open-next/middleware .open-next/assets/middleware && cp -r .open-next/.build .open-next/assets/.build && cp -r .open-next/server-functions .open-next/assets/server-functions && echo '_worker.js\ncloudflare\nmiddleware\n.build\nserver-functions' > .open-next/assets/.assetsignore",
     "pages:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },

@@ -7,6 +7,7 @@ export interface Story {
   thumbnail_url: string | null;
   category: string | null;
   tags: string[];
+  regions: string[];
   meta_title: string | null;
   meta_description: string | null;
   author_id: string;
@@ -15,6 +16,19 @@ export interface Story {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ProductOption {
+  name: string;
+  values: string[];
+  extra_price: number;
+}
+
+export interface ShippingInfo {
+  method?: string;
+  cost?: number;
+  free_threshold?: number;
+  note?: string;
 }
 
 export interface Product {
@@ -30,6 +44,8 @@ export interface Product {
   region: string | null;
   images: string[];
   thumbnail_url: string | null;
+  options: ProductOption[];
+  shipping_info: ShippingInfo;
   status: "draft" | "active" | "sold_out" | "archived";
   meta_title: string | null;
   meta_description: string | null;

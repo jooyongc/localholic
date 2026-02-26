@@ -77,6 +77,17 @@ const NAV_ITEMS = [
     ),
   },
   {
+    label: "사용량",
+    href: "/admin/usage",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 20V10" />
+        <path d="M12 20V4" />
+        <path d="M6 20v-6" />
+      </svg>
+    ),
+  },
+  {
     label: "설정",
     href: "/admin/settings",
     icon: (

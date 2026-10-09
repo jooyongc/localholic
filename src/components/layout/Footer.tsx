@@ -1,4 +1,5 @@
 import Link from "next/link";
+import NewsletterSubscribe from "./NewsletterSubscribe";
 
 const FOOTER_NAV = [
   {
@@ -121,6 +122,11 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+        </div>
+
+        {/* Newsletter (NEXT_PUBLIC_LETTER_URL이 있을 때만 보임) */}
+        <div className="mt-10 max-w-xl">
+          <NewsletterSubscribe />
         </div>
 
         {/* Divider */}

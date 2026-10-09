@@ -22,6 +22,8 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          # 레터 구독 폼: 저장소 변수(Settings → Variables)에 레터 앱 주소를 넣으면 푸터에 폼이 보인다
+          NEXT_PUBLIC_LETTER_URL: ${{ vars.NEXT_PUBLIC_LETTER_URL }}
 
       - name: Deploy to Cloudflare
         run: npx wrangler deploy

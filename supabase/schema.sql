@@ -186,7 +186,7 @@ begin
   new.updated_at = now();
   return new;
 end;
-$$ language plpgsql;
+$$ language plpgsql set search_path = public;
 
 create trigger trg_profiles_updated_at
   before update on profiles for each row execute function update_updated_at();
@@ -212,12 +212,13 @@ begin
   new.order_number = 'ORD-' || to_char(current_date, 'YYYYMMDD') || '-' || lpad(seq::text, 5, '0');
   return new;
 end;
-$$ language plpgsql;
+$$ language plpgsql set search_path = public;
 
 create trigger trg_orders_number
   before insert on orders for each row execute function generate_order_number();
 
 -- 4-3. 회원가입 시 profiles 자동 생성
+-- auth 스키마에서 실행되므로 search_path를 고정해야 profiles를 찾는다 (없으면 가입이 실패함)
 create or replace function handle_new_user()
 returns trigger as $$
 begin
@@ -229,7 +230,7 @@ begin
   );
   return new;
 end;
-$$ language plpgsql security definer;
+$$ language plpgsql security definer set search_path = public;
 
 create trigger on_auth_user_created
   after insert on auth.users for each row execute function handle_new_user();
@@ -243,7 +244,13 @@ begin
     where id = auth.uid() and role = 'admin'
   );
 end;
-$$ language plpgsql security definer stable;
+$$ language plpgsql security definer stable set search_path = public;
+
+-- SECURITY DEFINER 함수를 API(/rest/v1/rpc)로 직접 부르지 못하게 한다.
+-- 가입 트리거는 권한 없이도 실행되고, is_admin()은 RLS 정책에서 쓰므로 로그인 사용자에게만 남긴다.
+revoke execute on function handle_new_user() from public, anon, authenticated;
+revoke execute on function is_admin() from public, anon;
+grant execute on function is_admin() to authenticated;
 
 -- 5. Row Level Security
 -- ============================================================

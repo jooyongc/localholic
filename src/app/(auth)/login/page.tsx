@@ -38,42 +38,12 @@ export default function LoginPage() {
     router.refresh();
   }
 
-  async function handleKakaoLogin() {
-    setError("");
-    const { error: err } = await supabase.auth.signInWithOAuth({
-      provider: "kakao",
-      options: {
-        redirectTo: `${window.location.origin}/callback`,
-      },
-    });
-    if (err) setError(err.message);
-  }
-
   return (
     <div className="w-full max-w-sm">
       <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
         <h1 className="mb-6 text-center text-xl font-bold text-foreground">
           로그인
         </h1>
-
-        {/* Kakao Login */}
-        <button
-          onClick={handleKakaoLogin}
-          className="flex h-12 w-full items-center justify-center gap-2.5 rounded-xl font-medium transition-opacity hover:opacity-90"
-          style={{ backgroundColor: "#FEE500", color: "#191919" }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="#191919">
-            <path d="M12 3C6.48 3 2 6.36 2 10.44c0 2.62 1.75 4.93 4.38 6.24l-1.12 4.15a.37.37 0 0 0 .56.41l4.84-3.21c.44.04.88.07 1.34.07 5.52 0 10-3.36 10-7.66C22 6.36 17.52 3 12 3z" />
-          </svg>
-          카카오로 시작하기
-        </button>
-
-        {/* Divider */}
-        <div className="my-6 flex items-center gap-3">
-          <div className="h-px flex-1 bg-border" />
-          <span className="text-xs text-muted">또는 이메일로 로그인</span>
-          <div className="h-px flex-1 bg-border" />
-        </div>
 
         {/* Email/Password Form */}
         <form onSubmit={handleEmailLogin} className="flex flex-col gap-3">
